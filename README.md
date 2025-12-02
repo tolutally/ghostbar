@@ -76,9 +76,13 @@ Uses Windows Forms `NotifyIcon` for system tray presence:
    cd GhostBar
    ```
 
-2. Add your OpenAI API key in `OpenAIClient.cs`:
-   ```csharp
-   private static readonly string _apiKey = "your-api-key-here";
+2. Set your OpenAI API key as an environment variable:
+   ```powershell
+   # PowerShell (current session)
+   $env:GHOSTBAR_OPENAI_API_KEY = "your-api-key-here"
+   
+   # Or set permanently (User level)
+   [Environment]::SetEnvironmentVariable("GHOSTBAR_OPENAI_API_KEY", "your-api-key-here", "User")
    ```
 
 3. Build and run:
@@ -94,8 +98,8 @@ dotnet publish -c Release -r win-x64 --self-contained true
 
 ## ⚠️ Important Notes
 
+- **API Key Security**: The API key is read from `GHOSTBAR_OPENAI_API_KEY` environment variable. Never commit secrets to Git.
 - **SSL Bypass**: The current implementation disables SSL certificate validation for debugging. This should be removed for production use.
-- **API Key Security**: Move the API key to environment variables or a config file for production.
 - **Stealth Limitation**: The window is still visible to the user; it's only hidden from capture software.
 
 ## 📝 Logs
