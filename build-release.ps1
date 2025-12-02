@@ -13,12 +13,12 @@ Write-Host "Building GhostBar v$Version..." -ForegroundColor Cyan
 Write-Host "Cleaning previous builds..." -ForegroundColor Yellow
 dotnet clean -c Release
 
-# Publish self-contained executable
-Write-Host "Publishing self-contained executable..." -ForegroundColor Yellow
-dotnet publish -c Release -r win-x64 --self-contained true
+# Publish framework-dependent (small, requires .NET runtime on target)
+Write-Host "Publishing framework-dependent executable..." -ForegroundColor Yellow
+dotnet publish -c Release -r win-x64 --self-contained false
 
-# Create release ZIP
-$publishPath = "bin\Release\net10.0-windows\win-x64\publish\*"
+# Create release ZIP (exclude locale folders)
+$publishDir = "bin\Release\net10.0-windows\win-x64\publish"
 $zipName = "GhostBar-$Version-win-x64.zip"
 
 Write-Host "Creating $zipName..." -ForegroundColor Yellow
@@ -28,7 +28,9 @@ if (Test-Path $zipName) {
     Remove-Item $zipName -Force
 }
 
-Compress-Archive -Path $publishPath -DestinationPath $zipName -Force
+# Get only required files (exclude locale folders)
+$files = Get-ChildItem $publishDir -File
+Compress-Archive -Path $files.FullName -DestinationPath $zipName -Force
 
 # Show result
 $zipSize = (Get-Item $zipName).Length / 1MB

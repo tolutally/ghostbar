@@ -65,7 +65,7 @@ Uses Windows Forms `NotifyIcon` for system tray presence:
 ## 📋 Requirements
 
 - Windows 10/11
-- .NET 10 SDK or later
+- [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (for release builds)
 
 ## 🚀 Getting Started
 
