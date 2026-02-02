@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x' # Using stable 8.0 as 10.0 isn't standard in GitHub Actions yet
+        dotnet-version: '10.0.x' # Updated to match project TargetFramework
 
     - name: Restore dependencies
       run: dotnet restore
