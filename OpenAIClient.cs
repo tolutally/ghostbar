@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -42,8 +43,12 @@ namespace GhostBar
 
         public static async Task<string> AskAsync(string prompt)
         {
-            Logger.Action($"AskAsync called with prompt: {prompt.Substring(0, Math.Min(50, prompt.Length))}...");
-            
+            var messages = new[] { new ChatMessage("user", prompt) };
+            return await ChatAsync(messages);
+        }
+
+        public static async Task<string> ChatAsync(IEnumerable<ChatMessage> messages)
+        {
             var apiKey = ConfigManager.OpenAIKey;
             
             if (string.IsNullOrWhiteSpace(apiKey))
@@ -52,14 +57,18 @@ namespace GhostBar
                 return "⚠️ OpenAI API key missing. Click the settings (⚙️) button to configure it.";
             }
 
-            // Chat-style request body
+            // Convert ChatMessage objects to anonymous objects for JSON serialization
+            // (or ensure ChatMessage properties are lowercased if serialized directly)
+            var apiMessages = new System.Collections.Generic.List<object>();
+            foreach (var msg in messages)
+            {
+                apiMessages.Add(new { role = msg.Role, content = msg.Content });
+            }
+
             var requestBody = new
             {
                 model = "gpt-4o-mini", // or another model you have access to
-                messages = new[]
-                {
-                    new { role = "user", content = prompt }
-                }
+                messages = apiMessages
             };
 
             var json = JsonSerializer.Serialize(requestBody);

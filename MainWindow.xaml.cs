@@ -25,6 +25,9 @@ namespace GhostBar
         private TranscriptionService? _transcriptionService;
         private DispatcherTimer? _elapsedTimer;
         private bool _isTranscribing;
+        
+        // Chat history
+        private readonly System.Collections.Generic.List<ChatMessage> _chatHistory = new();
 
         public MainWindow()
         {
@@ -150,6 +153,13 @@ namespace GhostBar
 
             // For testing: keep visible on startup
             // Hide(); // Uncomment this to start hidden
+
+            // Populate Templates
+            foreach (var tmpl in PromptTemplates.All)
+            {
+                TemplateCombo.Items.Add(tmpl);
+            }
+            TemplateCombo.SelectedIndex = 0;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -209,11 +219,25 @@ namespace GhostBar
             // Call OpenAI
             Logger.Action($"Sending prompt: {text.Substring(0, Math.Min(50, text.Length))}...");
             ResponseBorder.Visibility = Visibility.Visible;
-            ResponseTextBlock.Text = "Thinking...";
+            ResponseViewer.Markdown = "Thinking...";
 
-            string answer = await OpenAIClient.AskAsync(text);
+            // Add user message to history
+            _chatHistory.Add(new ChatMessage("user", text));
 
-            ResponseTextBlock.Text = answer;
+            try 
+            {
+                string answer = await OpenAIClient.ChatAsync(_chatHistory);
+                
+                // Add AI message to history
+                _chatHistory.Add(new ChatMessage("assistant", answer));
+                
+                ResponseViewer.Markdown = answer;
+            }
+            catch (Exception ex)
+            {
+                ResponseViewer.Markdown = $"Error: {ex.Message}";
+            }
+            
             PromptTextBox.Clear();
         }
 
@@ -311,11 +335,25 @@ namespace GhostBar
                 
                 // Call OpenAI
                 ResponseBorder.Visibility = Visibility.Visible;
-                ResponseTextBlock.Text = "Thinking...";
+                ResponseViewer.Markdown = "Thinking...";
 
-                string answer = await OpenAIClient.AskAsync(text);
+                // Add user message to history
+                _chatHistory.Add(new ChatMessage("user", text));
 
-                ResponseTextBlock.Text = answer;
+                try 
+                {
+                    string answer = await OpenAIClient.ChatAsync(_chatHistory);
+                    
+                    // Add AI message to history
+                    _chatHistory.Add(new ChatMessage("assistant", answer));
+                    
+                    ResponseViewer.Markdown = answer;
+                }
+                catch (Exception ex)
+                {
+                    ResponseViewer.Markdown = $"Error: {ex.Message}";
+                }
+
                 PromptTextBox.Clear();
             }
         }
@@ -358,7 +396,8 @@ namespace GhostBar
             
             // Clear all inputs and responses
             PromptTextBox.Clear();
-            ResponseTextBlock.Text = "";
+            ResponseViewer.Markdown = "";
+            _chatHistory.Clear(); // Clear history on reset
             ResponseBorder.Visibility = Visibility.Collapsed;
             
             // Re-center window
@@ -630,28 +669,30 @@ namespace GhostBar
 
             // Show loading state
             ResponseBorder.Visibility = Visibility.Visible;
-            ResponseTextBlock.Text = "🧠 Analyzing transcript and generating notes...";
+            ResponseViewer.Markdown = "🧠 Analyzing transcript and generating notes...";
             
+            // Get selected template
+            var template = TemplateCombo.SelectedItem as PromptTemplate ?? PromptTemplates.All[0];
+
             // Construct prompt
-            string prompt = $@"You are an expert notetaker. Please analyze the following meeting transcript and generate a structured summary.
-Include:
-1. A brief executive summary (2-3 sentences).
-2. Key discussion points (bullet points).
-3. Action items with assignees (if identifiable).
+            string prompt = $@"{template.Prompt}
 
 TRANSCRIPT:
 {transcript}";
 
             try
             {
-                // Send to AI
-                string notes = await OpenAIClient.AskAsync(prompt);
-                ResponseTextBlock.Text = notes;
+                // Send to AI (New conversation for notes)
+                // We don't necessarily want this in the main chat history, or do we?
+                // Let's treat it as a standalone request for now.
+                var messages = new[] { new ChatMessage("user", prompt) };
+                string notes = await OpenAIClient.ChatAsync(messages);
+                ResponseViewer.Markdown = notes;
             }
             catch (Exception ex)
             {
                 Logger.Error($"Error generating notes: {ex.Message}");
-                ResponseTextBlock.Text = "❌ Failed to generate notes. Please check the logs.";
+                ResponseViewer.Markdown = "❌ Failed to generate notes. Please check the logs.";
             }
         }
 
