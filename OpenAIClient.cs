@@ -12,8 +12,9 @@ namespace GhostBar
     public static class OpenAIClient
     {
         // Read API key from environment variable - never hardcode secrets!
-        private static readonly string _apiKey =
-            Environment.GetEnvironmentVariable("GHOSTBAR_OPENAI_API_KEY") ?? "";
+        // API Key is now managed by ConfigManager
+        // private static readonly string _apiKey = ...
+
 
         private static readonly HttpClient _httpClient = CreateHttpClient();
 
@@ -43,10 +44,12 @@ namespace GhostBar
         {
             Logger.Action($"AskAsync called with prompt: {prompt.Substring(0, Math.Min(50, prompt.Length))}...");
             
-            if (string.IsNullOrWhiteSpace(_apiKey))
+            var apiKey = ConfigManager.OpenAIKey;
+            
+            if (string.IsNullOrWhiteSpace(apiKey))
             {
                 Logger.Error("API key not set");
-                return "⚠️ Set GHOSTBAR_OPENAI_API_KEY environment variable with your OpenAI API key.";
+                return "⚠️ OpenAI API key missing. Click the settings (⚙️) button to configure it.";
             }
 
             // Chat-style request body
@@ -65,7 +68,7 @@ namespace GhostBar
             Logger.APIRequest(endpoint, json);
             
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try

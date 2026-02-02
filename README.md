@@ -117,6 +117,32 @@ Built with:
 - **P/Invoke** for Windows API calls
 - **HttpClient** for OpenAI API requests
 
+## 🚀 Release Guide
+
+GhostBar is configured for automated cloud distribution via GitHub Actions.
+
+### How to Create a Release
+1.  **Commit changes** to your code.
+2.  **Tag the release** with a version starting with `v` (e.g., `v1.0.0`):
+    ```bash
+    git tag v1.0.0
+    git push origin v1.0.0
+    ```
+3.  **Wait for the Build**:
+    *   Go to the **Actions** tab in GitHub.
+    *   Watch the "GhostBar Release" workflow.
+4.  **Download**:
+    *   Once complete, a new **Release** will appear in the GitHub sidebar.
+    *   It will contain `GhostBar-Release.zip` ready for download.
+
+### Manual Trigger
+You can also manually trigger a build without tagging:
+1.  Go to **Actions** > **GhostBar Release**.
+2.  Click **Run workflow**.
+
+---
+
 ## 📄 License
+
 
 MIT License - feel free to use and modify as needed.

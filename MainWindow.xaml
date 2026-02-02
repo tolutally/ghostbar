@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GhostBar.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Width="500" Height="250"
+        Width="500" Height="450"
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
@@ -91,6 +91,30 @@
                     </Button.Template>
                 </Button>
                 
+                
+
+
+                <!-- Settings Button -->
+                <Button x:Name="SettingsButton" 
+                        Click="SettingsButton_Click"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="10,6"
+                        Cursor="Hand"
+                        Margin="4,0,0,0"
+                        ToolTip="Settings">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <Path Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.04 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.04 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" 
+                                      Fill="#8899aa" 
+                                      Width="16" Height="16" 
+                                      Stretch="Uniform"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                
                 <!-- Close Button -->
                 <Button x:Name="CloseButton" 
                         Content="✕" 
@@ -115,13 +139,141 @@
             </StackPanel>
         </Border>
 
+        <!-- Transcription Controls Bar -->
+        <Border x:Name="TranscriptionBar"
+                CornerRadius="16"
+                Background="#DD3d3d5c"
+                Padding="8"
+                Margin="0 45 0 0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Audio Source Dropdown -->
+                <ComboBox x:Name="AudioSourceCombo"
+                          Width="140"
+                          Height="28"
+                          SelectedIndex="0"
+                          Background="#2d3748"
+                          Foreground="#ddeeff"
+                          BorderThickness="1"
+                          BorderBrush="#556677">
+                    <ComboBoxItem Content="Microphone"/>
+                    <ComboBoxItem Content="System Audio"/>
+                    <ComboBoxItem Content="Both"/>
+                    <ComboBoxItem Content="Load File..."/>
+                </ComboBox>
+
+                <!-- Record/Stop Button -->
+                <Button x:Name="RecordButton" 
+                        Click="RecordButton_Click"
+                        Background="#2563eb"
+                        BorderThickness="0"
+                        Padding="12,6"
+                        Cursor="Hand"
+                        Margin="8,0,0,0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="14" 
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse x:Name="RecordIndicator" 
+                                             Width="10" Height="10" 
+                                             Fill="#ff4444" 
+                                             Margin="0,0,6,0"
+                                             Visibility="Collapsed"/>
+                                    <TextBlock x:Name="RecordButtonText" 
+                                               Text="▶ Start" 
+                                               Foreground="White" 
+                                               FontSize="12"
+                                               FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Elapsed Time -->
+                <TextBlock x:Name="ElapsedTimeText"
+                           Text="00:00:00"
+                           Foreground="#8899aa"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"
+                           Visibility="Collapsed"/>
+
+                <!-- Save Button -->
+                <Button x:Name="SaveButton" 
+                        Click="SaveButton_Click"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="8,6"
+                        Cursor="Hand"
+                        Margin="8,0,0,0"
+                        IsEnabled="False">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <Path Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" 
+                                      Fill="{TemplateBinding Foreground}" 
+                                      Width="16" Height="16" 
+                                      Stretch="Uniform"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Foreground" Value="#556677"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Foreground" Value="#8899aa"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- Generate AI Notes Button -->
+                <Button x:Name="GenerateNotesButton" 
+                        Click="GenerateNotesButton_Click"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="8,6"
+                        Cursor="Hand"
+                        Margin="8,0,0,0"
+                        IsEnabled="False"
+                        ToolTip="Generate AI Notes">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <Path Data="M21,11.5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H13.5L21,11.5M11,17H7V15H11V17M17,13H7V11H17V13M17,9H7V7H17V9M14,3V10.5H21L14,3Z" 
+                                      Fill="{TemplateBinding Foreground}" 
+                                      Width="16" Height="16" 
+                                      Stretch="Uniform"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Foreground" Value="#556677"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Foreground" Value="#2563eb"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Border>
+
         <!-- Main Input Area -->
         <Border CornerRadius="16"
                 Background="#DD2d3748"
                 BorderBrush="#556677"
                 BorderThickness="1"
                 Padding="12"
-                Margin="0 50 0 0"
+                Margin="0 95 0 0"
                 VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -214,9 +366,9 @@
                 BorderBrush="#556677"
                 BorderThickness="1"
                 Padding="12"
-                Margin="0 115 0 0"
+                Margin="0 160 0 0"
                 VerticalAlignment="Top"
-                MaxHeight="120"
+                MaxHeight="100"
                 Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <TextBlock x:Name="ResponseTextBlock"
@@ -224,6 +376,63 @@
                            Foreground="#ccddee"
                            FontSize="13"/>
             </ScrollViewer>
+        </Border>
+
+        <!-- Transcript Area -->
+        <Border x:Name="TranscriptBorder"
+                CornerRadius="12"
+                Background="#DD2d3748"
+                BorderBrush="#556677"
+                BorderThickness="1"
+                Padding="12"
+                Margin="0 265 0 10"
+                VerticalAlignment="Top"
+                Height="170"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Transcript Header -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                    <TextBlock Text="📝 Live Transcript" 
+                               Foreground="#99ccdd" 
+                               FontSize="12" 
+                               FontWeight="SemiBold"/>
+                    <TextBlock x:Name="SpeakerCountText"
+                               Text=" (0 speakers)"
+                               Foreground="#8899aa"
+                               FontSize="11"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Transcript Content -->
+                <ScrollViewer Grid.Row="1" 
+                              x:Name="TranscriptScroller"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="TranscriptPanel">
+                        <!-- Transcript segments will be added here dynamically -->
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Partial Result (current speech) -->
+                <Border Grid.Row="2" 
+                        Background="#1a2533" 
+                        CornerRadius="8" 
+                        Padding="8" 
+                        Margin="0,8,0,0"
+                        Visibility="{Binding ElementName=PartialText, Path=Text, Converter={x:Null}}">
+                    <TextBlock x:Name="PartialText"
+                               Text=""
+                               Foreground="#667788"
+                               FontSize="12"
+                               FontStyle="Italic"
+                               TextWrapping="Wrap"/>
+                </Border>
+            </Grid>
         </Border>
     </Grid>
 

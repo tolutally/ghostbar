@@ -67,9 +67,7 @@ Most screen sharing / recording tools (newer Zoom, Teams, etc.) use these APIs o
 NOT show up when:
 
 You screen share the whole screen
-
 You use Snipping Tool / Print Screen (depending on how they’re implemented)
-
 Or might appear as a black rectangle if something weird happens.
 
 We’ll call this via P/Invoke from C#.
@@ -79,9 +77,7 @@ We’ll call this via P/Invoke from C#.
 Let’s pick:
 
 Language: C#
-
 UI framework: WPF (simple and works well for this)
-
 Project type: .NET 8 WPF app
 
 3.1. Projects / classes
@@ -368,21 +364,13 @@ Add error handling, retry, streaming, etc.
 Once you get that basic app running, the next steps:
 
 Make the UI prettier & smaller
-
 Shrink height, tweak opacity, nicer font.
-
 Add a “pin last answer” toggle
-
 So the answer stays on screen while you talk.
-
 Add a quick “clear all” / panic hotkey
-
 e.g., Ctrl + Shift + Esc → immediately clear response + hide.
 
 Then later we can:
-
 Add voice input and TTS output.
-
 Add multi-monitor logic (e.g., move overlay to current cursor display).
-
 Port the concepts to macOS with the constraints we discussed.
